@@ -1,6 +1,8 @@
--- Creates a table, users, with id, email, and name columns
-CREATE TABLE IF NOT EXISTS users (
-    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    name VARCHAR(255)
-);
+--Creates a trigger that resets the attribute valid_email only when the email has been changed.
+DELIMITER $$;
+CREATE TRIGGER validate BEFORE
+UPDATE ON users FOR EACH ROW BEGIN IF NEW.email != OLD.email THEN
+SET NEW.valid_email = 0;
+END IF;
+END $$;
+DELIMITER;
