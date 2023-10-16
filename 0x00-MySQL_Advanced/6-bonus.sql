@@ -1,13 +1,17 @@
 -- Creates a stored procedure AddBonus that adds a new correction for a student.
-DELIMITER $$ CREATE PROCEDURE AddBonus(
+DELIMITER $$
+CREATE PROCEDURE AddBonus(
     IN user_id INTEGER,
     IN project_name VARCHAR(255),
     IN score INTEGER
-) BEGIN IF NOT EXISTS(
+)
+BEGIN
+IF NOT EXISTS(
     SELECT name
     FROM projects
     WHERE name = project_name
-) THEN
+)
+THEN
 INSERT INTO projects (name)
 VALUES (project_name);
 END IF;
@@ -22,4 +26,5 @@ VALUES (
         score
     );
 END;
-$$ DELIMITER;
+$$
+DELIMITER;
