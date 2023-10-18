@@ -31,6 +31,10 @@ def print_top_10_ips(server_collection):
             "$limit": 10
         },
         ])
+    for req in req_logs:
+        ip = req["_id"]
+        ip_reqs = req["count"]
+        print("\t{}: {}".format(ip, ip_reqs))
 
 
 def run():
