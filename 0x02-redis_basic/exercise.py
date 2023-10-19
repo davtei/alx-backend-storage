@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Incrementing values """
+""" Radis basic module """
 
 import redis
 import uuid
@@ -29,6 +29,17 @@ def call_history(method: Callable) -> Callable:
         self._redis.rpush(method.__qualname__ + ":outputs", output)
         return output
     return wrapper
+
+
+def replay(fn: Callable) -> None:
+    """ Display the history of calls of a particular function """
+    method_name = fn.__qualname__
+    inputs = self._redis.lrange(method_name + ":inputs", 0, -1)
+    outputs = self._redis.lrange(method_name + ":outputs", 0, -1)
+    print("{} was called {} times:".format(method_name, len(inputs)))
+    for i, o in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(
+            method_name, i.decode('utf-8'), o.decode('utf-8')))
 
 
 class Cache:
