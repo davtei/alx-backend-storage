@@ -16,9 +16,14 @@ def data_cacher(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url):
         """ Wrapper function """
-        redis_key = "cached:{}".format(url)
-        redis_store.setex(redis_key, 10, "Cached data")
-        return method(url)
+        redis_store.incr("count:{}".format(url))
+        result = redis_store.get("count:{}".format(url))
+        if result:
+            return result.decode("utf-8")
+        result = method(url)
+        redis_store.set("count:{}".format(url), 0)
+        redis_store.expire("count:{}".format(url), 10, result)
+        return result
     return wrapper
 
 
