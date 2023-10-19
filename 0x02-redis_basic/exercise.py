@@ -33,6 +33,9 @@ def call_history(method: Callable) -> Callable:
 
 def replay(fn: Callable) -> None:
     """ Display the history of calls of a particular function """
+    if fn is None or not hasattr(fn, '__self__'):
+        return
+    self = fn.__self__
     method_name = fn.__qualname__
     inputs = self._redis.lrange(method_name + ":inputs", 0, -1)
     outputs = self._redis.lrange(method_name + ":outputs", 0, -1)
