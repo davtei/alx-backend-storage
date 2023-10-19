@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
-""" Writing strings to Redis """
+""" Incrementing values """
 
-import re
 import redis
 import uuid
+from functools import wraps
 from typing import Union, Callable
+
+
+def count_calls(method: Callable) -> Callable
+    """ Count calls decorator """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs) -> Any:
+        """ Wrapper function """
+        self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+    return wrapper
 
 
 class Cache:
