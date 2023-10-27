@@ -22,7 +22,7 @@ def data_cacher(method: Callable) -> Callable:
             return result.decode("utf-8")
         result = method(url)
         redis_store.set("count:{}".format(url), 0)
-        redis_store.expire("count:{}".format(url), 10, result)
+        redis_store.expire("count:{}".format(url), 10)
         return result
     return wrapper
 
