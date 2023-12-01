@@ -17,7 +17,7 @@ def data_cacher(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url) -> str:
         """ Wrapper function """
-        redis_store.incr(f"count:{url}")
+        redis_store.incr(f"count:{url}", 1)
         result = redis_store.get(f"result:{url}")
         if result:
             return result.decode("utf-8")
