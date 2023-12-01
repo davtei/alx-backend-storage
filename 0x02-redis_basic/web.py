@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """ Implementing an expiring web cache and tracker """
 
-import redis
-import requests
 from functools import wraps
 from typing import Callable
 
+import redis
+import requests
 
 redis_store = redis.Redis()
 """ Redis instance """
@@ -14,7 +14,7 @@ redis_store = redis.Redis()
 def data_cacher(method: Callable) -> Callable:
     """ Cache a request with expiration of 10 seconds """
     @wraps(method)
-    def wrapper(url):
+    def wrapper(url) -> str:
         """ Wrapper function """
         redis_store.incr("count:{}".format(url))
         result = redis_store.get("result:{}".format(url))
