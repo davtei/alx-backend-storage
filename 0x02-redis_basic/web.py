@@ -7,6 +7,7 @@ from typing import Callable
 import redis
 import requests
 
+
 redis_store = redis.Redis()
 """ Redis instance """
 
@@ -16,13 +17,13 @@ def data_cacher(method: Callable) -> Callable:
     @wraps(method)
     def wrapper(url) -> str:
         """ Wrapper function """
-        redis_store.incr("count:{}".format(url))
-        result = redis_store.get("result:{}".format(url))
+        redis_store.incr(f"count:{url}")
+        result = redis_store.get(f"result:{url}")
         if result:
             return result.decode("utf-8")
         result = method(url)
-        redis_store.set("count:{}".format(url), 0)
-        redis_store.setex("result:{}".format(url), 10, result)
+        redis_store.set(f"count:{url}", 0)
+        redis_store.setex(f"result:{url}", 10, result)
         return result
     return wrapper
 
@@ -30,4 +31,4 @@ def data_cacher(method: Callable) -> Callable:
 @data_cacher
 def get_page(url: str) -> str:
     """ Use requests to get the HTML content of a particular URL """
-    return requests.get(url).text
+    return requests.get(url, timeout=30).text
